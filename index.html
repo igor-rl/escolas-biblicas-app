@@ -23,7 +23,7 @@
             --code-bg: #050505;
         }
 
-        /* ── Base Reset ────────────────────────────────────────────────── */
+        /* ── Base Reset ─────────────────────────────────────── */
         * { box-sizing: border-box; }
         body {
             margin: 0;
@@ -90,6 +90,28 @@
             color: #ffffff;
         }
 
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            padding: 8px 14px;
+            background: transparent;
+            border: 1px solid var(--border-strong);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-border);
+            color: var(--accent);
+        }
+
         .instructions-box {
             margin-top: 24px;
             padding-top: 24px;
@@ -108,7 +130,6 @@
 
         .instruction-text { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
 
-        /* Estilo Terminal/Code */
         code {
             display: block;
             background: var(--code-bg);
@@ -134,13 +155,19 @@
 
         .footer-links { margin-top: 24px; display: flex; justify-content: center; gap: 16px; }
         .footer-links a { font-size: 12px; color: var(--text-tertiary); text-decoration: none; }
+        .footer-links a:hover { color: var(--text-secondary); }
+
+        .loading-state { color: var(--text-tertiary); font-size: 13px; }
+        .error-state { color: #e05c5c; font-size: 13px; }
+
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div id="loading">Sincronizando...</div>
+        <div id="loading" class="loading-state">Carregando...</div>
+        <div id="error" class="error-state hidden">Erro ao carregar dados. <a href="https://github.com/igor-rl/escolas-biblicas-app/releases/latest" style="color:inherit">Ver releases</a>.</div>
 
         <div id="download-area" class="hidden">
             <div class="eb-surface">
@@ -148,7 +175,14 @@
                 <h1>Escolas Bíblicas</h1>
                 <p class="subtitle">v<span id="version-number">0.0.0</span> — Desktop</p>
 
-                <a href="#" id="main-download-btn" class="eb-btn-primary">Baixar para <span id="btn-os">Sistema</span></a>
+                <a href="#" id="main-download-btn" class="eb-btn-primary">
+                    Baixar para <span id="btn-os">Sistema</span>
+                </a>
+
+                <!-- Botão alternativo (ex: macOS Intel quando detectou arm64) -->
+                <a href="#" id="alt-download-btn" class="btn-secondary hidden">
+                    <span id="alt-btn-text">Versão alternativa</span>
+                </a>
 
                 <div class="instructions-box">
                     <span class="eb-label" id="instruction-title">Instalação</span>
@@ -157,74 +191,112 @@
             </div>
 
             <div class="footer-links">
-                <a href="https://github.com/igor-rl/escolas-biblicas/releases">GitHub Releases</a>
+                <a href="https://github.com/igor-rl/escolas-biblicas-app/releases">Todas as versões</a>
             </div>
         </div>
     </div>
 
     <script>
-        const REPO = "igor-rl/escolas-biblicas";
+        // ─────────────────────────────────────────────────────────────
+        // REPO PÚBLICO — onde ficam as releases e os binários
+        // ─────────────────────────────────────────────────────────────
+        const REPO = "igor-rl/escolas-biblicas-app";
 
         function getDetailedOS() {
             const ua = navigator.userAgent.toLowerCase();
             if (ua.includes("win")) return { os: "windows", arch: "x64" };
             if (ua.includes("mac")) {
+                // Heurística: tenta detectar Apple Silicon via WebGL renderer
                 const canvas = document.createElement('canvas');
                 const gl = canvas.getContext('webgl');
                 let isAppleSilicon = false;
                 if (gl) {
-                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || "";
-                    if (renderer.includes("Apple")) isAppleSilicon = true;
+                    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (dbg) {
+                        const renderer = gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || "";
+                        if (renderer.toLowerCase().includes("apple")) isAppleSilicon = true;
+                    }
                 }
                 return { os: "macos", arch: isAppleSilicon ? "arm64" : "x64" };
             }
             return { os: "unknown", arch: "x64" };
         }
 
+        function assetUrl(version, filename) {
+            return `https://github.com/${REPO}/releases/download/v${version}/${filename}`;
+        }
+
         async function init() {
             try {
                 const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const release = await res.json();
                 const version = release.tag_name.replace('v', '');
                 const info = getDetailedOS();
-                
+
                 const ui = {
-                    version: document.getElementById('version-number'),
-                    label: document.getElementById('os-label'),
-                    btn: document.getElementById('main-download-btn'),
-                    btnText: document.getElementById('btn-os'),
-                    content: document.getElementById('instruction-content')
+                    version:    document.getElementById('version-number'),
+                    label:      document.getElementById('os-label'),
+                    btn:        document.getElementById('main-download-btn'),
+                    btnOs:      document.getElementById('btn-os'),
+                    altBtn:     document.getElementById('alt-download-btn'),
+                    altBtnText: document.getElementById('alt-btn-text'),
+                    content:    document.getElementById('instruction-content'),
                 };
 
                 ui.version.innerText = version;
 
                 if (info.os === "windows") {
-                    ui.label.innerText = "Windows (x64)";
-                    ui.btnText.innerText = "Windows";
-                    ui.btn.href = `https://github.com/${REPO}/releases/download/v${version}/Escolas-Biblicas-windows-installer-${version}.exe`;
+                    ui.label.innerText  = "Windows (x64)";
+                    ui.btnOs.innerText  = "Windows";
+                    ui.btn.href = assetUrl(version, `Escolas-Biblicas-windows-installer-${version}.exe`);
+
+                    // Botão alternativo: versão portátil
+                    ui.altBtn.href = assetUrl(version, `Escolas-Biblicas-windows-portable-${version}.exe`);
+                    ui.altBtnText.innerText = "↓ Versão portátil (sem instalação)";
+                    ui.altBtn.classList.remove('hidden');
+
                     ui.content.innerHTML = "Execute o instalador e siga os passos na tela.";
-                } 
+                }
                 else if (info.os === "macos") {
+                    const altArch = info.arch === "arm64" ? "x64" : "arm64";
+                    const altLabel = altArch === "arm64" ? "Apple Silicon" : "Intel";
+
                     ui.label.innerText = `macOS ${info.arch === "arm64" ? "Apple Silicon" : "Intel"}`;
-                    ui.btnText.innerText = "macOS";
-                    ui.btn.href = `https://github.com/${REPO}/releases/download/v${version}/Escolas-Biblicas-macOS-${version}-${info.arch}.dmg`;
-                    
-                    const cmd = `xattr -rd com.apple.quarantine '/Applications/Escolas Biblicas.app' && "/Applications/Escolas Biblicas.app/Contents/MacOS/Escolas Biblicas"`;
-                    
+                    ui.btnOs.innerText = "macOS";
+                    ui.btn.href = assetUrl(version, `Escolas-Biblicas-macOS-${version}-${info.arch}.dmg`);
+
+                    // Botão alternativo: outra arquitetura
+                    ui.altBtn.href = assetUrl(version, `Escolas-Biblicas-macOS-${version}-${altArch}.dmg`);
+                    ui.altBtnText.innerText = `↓ Versão para Mac ${altLabel}`;
+                    ui.altBtn.classList.remove('hidden');
+
+                    const cmd = `xattr -rd com.apple.quarantine '/Applications/Escolas Biblicas.app' && open '/Applications/Escolas Biblicas.app'`;
+
                     ui.content.innerHTML = `
-                        1. Arraste o app para <b>Aplicativos</b>.<br>
-                        2. Como o app não é assinado, o macOS irá bloqueá-lo. Para liberar, copie e rode o comando abaixo no <b>Terminal</b>:
-                        <code onclick="navigator.clipboard.writeText(this.innerText); alert('Copiado!')">${cmd}</code>
+                        1. Abra o <b>.dmg</b> e arraste o app para <b>Aplicativos</b>.<br><br>
+                        2. Como o app não é assinado pela App Store, o macOS irá bloqueá-lo na primeira abertura.
+                        Para liberar, abra o <b>Terminal</b> e rode:
+                        <code onclick="navigator.clipboard.writeText(this.innerText).then(() => alert('Comando copiado!'))">${cmd}</code>
+                        Ou vá em <b>Ajustes do Sistema → Privacidade e Segurança</b> e clique em <b>"Abrir mesmo assim"</b>.
                     `;
+                }
+                else {
+                    ui.label.innerText = "Sistema não identificado";
+                    ui.btn.href = `https://github.com/${REPO}/releases/latest`;
+                    ui.btnOs.innerText = "ver releases";
+                    ui.content.innerHTML = "Acesse a página de releases e baixe o arquivo para o seu sistema.";
                 }
 
                 document.getElementById('loading').classList.add('hidden');
                 document.getElementById('download-area').classList.remove('hidden');
             } catch (e) {
-                document.getElementById('loading').innerText = "Erro ao carregar dados.";
+                console.error(e);
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('error').classList.remove('hidden');
             }
         }
+
         init();
     </script>
 </body>
