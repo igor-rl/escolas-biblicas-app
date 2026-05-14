@@ -206,16 +206,22 @@
                     ui.content.innerHTML = "Execute o instalador e siga os passos na tela.";
                 } 
                 else if (info.os === "macos") {
-                    ui.label.innerText = `macOS ${info.arch === "arm64" ? "Apple Silicon" : "Intel"}`;
-                    ui.btnText.innerText = "macOS";
+                    const isApple = info.arch === "arm64";
+                    ui.label.innerText = `macOS ${isApple ? "Apple Silicon" : "Intel"}`;
+                    
+                    // Ajuste do texto do botão com espaço
+                    ui.btnText.innerText = `macOS (${isApple ? "Apple Silicon" : "Intel"})`;
+                    
+                    // Link dinâmico baseado na arquitetura
                     ui.btn.href = `https://github.com/${REPO}/releases/download/v${version}/Escolas-Biblicas-macOS-${version}-${info.arch}.dmg`;
                     
-                    const cmd = `xattr -rd com.apple.quarantine '/Applications/Escolas Biblicas.app' && "/Applications/Escolas Biblicas.app/Contents/MacOS/Escolas Biblicas"`;
+                    const cmd = `xattr -rd com.apple.quarantine '/Applications/Escolas Biblicas.app' && open '/Applications/Escolas Biblicas.app'`;
                     
                     ui.content.innerHTML = `
-                        1. Arraste o app para <b>Aplicativos</b>.<br>
+                        1. Abra o <b>.dmg</b> e arraste o app para <b>Aplicativos</b>.<br>
                         2. Como o app não é assinado, o macOS irá bloqueá-lo. Para liberar, copie e rode o comando abaixo no <b>Terminal</b>:
                         <code onclick="navigator.clipboard.writeText(this.innerText); alert('Copiado!')">${cmd}</code>
+                        Ou vá em <b>Ajustes do Sistema → Privacidade e Segurança</b> e clique em <b>"Abrir mesmo assim"</b>.
                     `;
                 }
 
