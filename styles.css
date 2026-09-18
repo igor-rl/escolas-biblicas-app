@@ -1,0 +1,212 @@
+/* ── Theme Tokens ────────────────────────────────────── */
+:root {
+    --bg-base: #0c0c0e;
+    --bg-surface: #111114;
+    --bg-elevated: #18181c;
+    --bg-hover: #1f1f24;
+    --border: #232328;
+    --border-strong: #2e2e36;
+    --text-primary: #e8e8ec;
+    --text-secondary: #8a8a96;
+    --text-tertiary: #52525c;
+    --accent: #5b6af0;
+    --accent-hover: #6b79f5;
+    --accent-muted: rgba(91, 106, 240, 0.12);
+    --accent-border: rgba(91, 106, 240, 0.22);
+    --code-bg: #050505;
+    --navbar-height: 56px;
+}
+
+/* ── Base Reset ────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+
+/* ── Navbar ────────────────────────────────────────────────────── */
+.eb-navbar {
+    height: var(--navbar-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.eb-navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.eb-navbar-links {
+    display: flex;
+    gap: 4px;
+}
+
+.eb-navbar-link {
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.eb-navbar-link:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.eb-navbar-link.active {
+    background: var(--accent-muted);
+    color: var(--accent);
+}
+
+/* ── Page content wrapper ──────────────────────────────────────── */
+.page-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - var(--navbar-height));
+    padding: 24px;
+}
+
+.page-content.align-top {
+    align-items: flex-start;
+    padding-top: 48px;
+    padding-bottom: 48px;
+}
+
+.container {
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+}
+
+.container.wide {
+    max-width: 640px;
+    text-align: left;
+}
+
+.eb-surface {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+h1 { font-size: 20px; font-weight: 600; margin: 0 0 8px 0; }
+.subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 32px; }
+
+.os-badge {
+    display: inline-flex;
+    padding: 4px 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+}
+
+.eb-btn-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background: var(--accent-muted);
+    border: 1px solid var(--accent-border);
+    color: var(--accent);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.eb-btn-primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #ffffff;
+}
+
+.instructions-box {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: left;
+}
+
+.eb-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+    display: block;
+}
+
+#btn-os {
+    margin-left: 0.25em;
+}
+
+.instruction-text { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+
+/* Estilo Terminal/Code */
+code {
+    display: block;
+    background: var(--code-bg);
+    border: 1px solid var(--border-strong);
+    padding: 12px;
+    border-radius: 6px;
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 11px;
+    color: var(--text-primary);
+    margin: 10px 0;
+    word-break: break-all;
+    cursor: pointer;
+    position: relative;
+}
+
+code:hover::after {
+    content: "Clique para copiar";
+    position: absolute;
+    top: -20px; right: 0;
+    font-size: 9px;
+    color: var(--accent);
+}
+
+.footer-links { margin-top: 24px; display: flex; justify-content: center; gap: 16px; }
+.footer-links a { font-size: 12px; color: var(--text-tertiary); text-decoration: none; }
+.hidden { display: none; }
+
+/* ── Prose (páginas de texto: Início, Privacidade) ────────────────── */
+.prose h1 { font-size: 24px; margin-bottom: 6px; }
+.prose .subtitle { margin-bottom: 28px; }
+.prose h2 { font-size: 15px; font-weight: 600; margin: 28px 0 10px; color: var(--text-primary); }
+.prose p { font-size: 13px; line-height: 1.7; color: var(--text-secondary); margin: 0 0 12px; }
+.prose ul { margin: 0 0 12px; padding-left: 20px; }
+.prose li { font-size: 13px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 6px; }
+.prose strong { color: var(--text-primary); }
+.prose .updated-at { font-size: 11px; color: var(--text-tertiary); margin-top: 28px; }

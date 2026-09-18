@@ -4,164 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instalar | Escolas Bíblicas</title>
-    <style>
-        /* ── Theme Tokens ────────────────────────────────────── */
-        :root {
-            --bg-base: #0c0c0e;
-            --bg-surface: #111114;
-            --bg-elevated: #18181c;
-            --bg-hover: #1f1f24;
-            --border: #232328;
-            --border-strong: #2e2e36;
-            --text-primary: #e8e8ec;
-            --text-secondary: #8a8a96;
-            --text-tertiary: #52525c;
-            --accent: #5b6af0;
-            --accent-hover: #6b79f5;
-            --accent-muted: rgba(91, 106, 240, 0.12);
-            --accent-border: rgba(91, 106, 240, 0.22);
-            --code-bg: #050505;
-        }
-
-        /* ── Base Reset ────────────────────────────────────────────────── */
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            background-color: var(--bg-base);
-            color: var(--text-primary);
-            font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            padding: 24px;
-            text-align: center;
-        }
-
-        .eb-surface {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 32px 24px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-        }
-
-        h1 { font-size: 20px; font-weight: 600; margin: 0 0 8px 0; }
-        .subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 32px; }
-
-        .os-badge {
-            display: inline-flex;
-            padding: 4px 10px;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border-strong);
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--text-tertiary);
-            margin-bottom: 16px;
-            text-transform: uppercase;
-        }
-
-        .eb-btn-primary {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            background: var(--accent-muted);
-            border: 1px solid var(--accent-border);
-            color: var(--accent);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.15s ease;
-        }
-
-        .eb-btn-primary:hover {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #ffffff;
-        }
-
-        .instructions-box {
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-            text-align: left;
-        }
-
-        .eb-label {
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: var(--text-tertiary);
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        #btn-os {
-            margin-left: 0.25em;
-        }
-
-        .instruction-text { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
-
-        /* Estilo Terminal/Code */
-        code {
-            display: block;
-            background: var(--code-bg);
-            border: 1px solid var(--border-strong);
-            padding: 12px;
-            border-radius: 6px;
-            font-family: 'SF Mono', 'Menlo', monospace;
-            font-size: 11px;
-            color: var(--text-primary);
-            margin: 10px 0;
-            word-break: break-all;
-            cursor: pointer;
-            position: relative;
-        }
-
-        code:hover::after {
-            content: "Clique para copiar";
-            position: absolute;
-            top: -20px; right: 0;
-            font-size: 9px;
-            color: var(--accent);
-        }
-
-        .footer-links { margin-top: 24px; display: flex; justify-content: center; gap: 16px; }
-        .footer-links a { font-size: 12px; color: var(--text-tertiary); text-decoration: none; }
-        .hidden { display: none; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <div class="container">
-        <div id="loading">Sincronizando...</div>
+    <nav class="eb-navbar">
+        <a href="home.html" class="eb-navbar-brand">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5.5c-1.6-1.3-3.6-2-6-2-.5 0-1 .05-1.5.15v13c.5-.1 1-.15 1.5-.15 2.4 0 4.4.7 6 2 1.6-1.3 3.6-2 6-2 .5 0 1 .05 1.5.15v-13c-.5-.1-1-.15-1.5-.15-2.4 0-4.4.7-6 2z" />
+                <path d="M12 5.5v13" />
+            </svg>
+            Escolas Bíblicas
+        </a>
+        <div class="eb-navbar-links">
+            <a href="home.html" class="eb-navbar-link">Início</a>
+            <a href="index.html" class="eb-navbar-link active">Baixar</a>
+            <a href="privacidade.html" class="eb-navbar-link">Privacidade</a>
+        </div>
+    </nav>
 
-        <div id="download-area" class="hidden">
-            <div class="eb-surface">
-                <div class="os-badge" id="os-label">Detectando...</div>
-                <h1>Escolas Bíblicas</h1>
-                <p class="subtitle">v<span id="version-number">0.0.0</span> — Desktop</p>
+    <div class="page-content">
+        <div class="container">
+            <div id="loading">Sincronizando...</div>
 
-                <a href="#" id="main-download-btn" class="eb-btn-primary">Baixar para&nbsp;<span id="btn-os">Sistema</span></a>
+            <div id="download-area" class="hidden">
+                <div class="eb-surface">
+                    <div class="os-badge" id="os-label">Detectando...</div>
+                    <h1>Escolas Bíblicas</h1>
+                    <p class="subtitle">v<span id="version-number">0.0.0</span> — Desktop</p>
 
-                <div class="instructions-box">
-                    <span class="eb-label" id="instruction-title">Instalação</span>
-                    <div id="instruction-content" class="instruction-text"></div>
+                    <a href="#" id="main-download-btn" class="eb-btn-primary">Baixar para&nbsp;<span id="btn-os">Sistema</span></a>
+
+                    <div class="instructions-box">
+                        <span class="eb-label" id="instruction-title">Instalação</span>
+                        <div id="instruction-content" class="instruction-text"></div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="footer-links">
-                <a href="https://github.com/igor-rl/escolas-biblicas-app/releases">Encontre mais versões do app</a>
+                <div class="footer-links">
+                    <a href="https://github.com/igor-rl/escolas-biblicas-app/releases">Encontre mais versões do app</a>
+                </div>
             </div>
         </div>
     </div>
