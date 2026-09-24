@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abrir turma | Escolas Bíblicas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!--
+      Página chamada pelo Google Drive quando alguém usa "Abrir com → Escolas Bíblicas" no arquivo
+      turma.escolas-biblicas.json. O Drive envia ?state={"ids":["<id>"],"action":"open","userId":"..."}
+      e já liberou o arquivo para o app; esta página só repassa o id ao app pelo link escolas-biblicas://.
+    -->
+    <div class="page-content">
+        <div class="container">
+            <div class="eb-surface">
+                <h1 id="titulo">Abrindo no Escolas Bíblicas...</h1>
+                <p class="subtitle" id="texto">Se o navegador perguntar, permita abrir o aplicativo Escolas Bíblicas.</p>
+                <a id="abrir" class="eb-btn-primary hidden" href="#">Abrir no Escolas Bíblicas</a>
+                <div class="instructions-box">
+                    <p class="instruction-text">
+                        O app não abriu? Verifique se ele está instalado e se você entrou nele com a mesma conta Google
+                        deste navegador. <a href="index.html" style="color: var(--accent);">Baixar o Escolas Bíblicas</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var titulo = document.getElementById('titulo');
+            var texto = document.getElementById('texto');
+            var botao = document.getElementById('abrir');
+            var estado = null;
+            try {
+                estado = JSON.parse(new URLSearchParams(location.search).get('state') || 'null');
+            } catch (e) { estado = null; }
+
+            var id = estado && estado.action === 'open' && estado.ids && estado.ids[0];
+            if (!id || !/^[\w-]{10,200}$/.test(id)) {
+                titulo.textContent = 'Nada para abrir';
+                texto.textContent = 'Esta página é usada pelo Google Drive: no arquivo turma.escolas-biblicas.json, escolha "Abrir com → Escolas Bíblicas".';
+                return;
+            }
+
+            var link = 'escolas-biblicas://abrir?arquivo=' + encodeURIComponent(id);
+            botao.href = link;
+            botao.classList.remove('hidden');
+            location.href = link;
+        })();
+    </script>
+</body>
+</html>
